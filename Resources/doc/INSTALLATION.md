@@ -9,16 +9,6 @@ your eZPlatform project:
 composer require smile/ez-tfa-bundle
 ```
 
-## Add Doctrine ORM support
-
-edit your ezplatform.yml
-
-```yaml
-doctrine:
-    orm:
-        auto_mapping: true
-```
-
 ## Enable the bundle
 
 To start using the bundle, register the bundle in your application's kernel class:
@@ -33,6 +23,21 @@ public function registerBundles()
         // ...
     );
 }
+
+## Add Doctrine ORM support
+
+edit your ezplatform.yml
+
+```yaml
+doctrine:
+    orm:
+        auto_mapping: true
+```
+
+## Update database schema
+
+```console
+php app/console doctrine:schema:update --force
 ```
 
 ## Configure bundle
@@ -40,20 +45,9 @@ public function registerBundles()
 Two providers are natively available:
 * email
 * sms
+* u2f (no configuration needed)
 
-### email provider configuration
-
-```yaml
-# app/config/config.yml
-smileez_tfa:
-    system:
-        acme_site: # TFA is activated only for this siteaccess
-            providers:
-                email:
-                    from: no-spam@your.mail # email provider sender mail
-```
-
-### SMS Provider configuration
+### SMS Provider initialization
 
 Subscribe to OVH SMS Service to obtain api keys
 
@@ -63,6 +57,7 @@ Go to API key page to generate application and consumer keys
 
 https://api.ovh.com/createToken/
 
+### Providers configuration
 
 ```yaml
 # app/config/config.yml
@@ -70,6 +65,8 @@ smileez_tfa:
     system:
         acme_site: # TFA is activated only for this siteaccess
             providers:
+                email:
+                    from: no-spam@your.mail # email provider sender mail
                 sms:
                     application_key: <ovh_application_key>
                     application_secret: <ovh_application_secret>
@@ -77,8 +74,8 @@ smileez_tfa:
 ```
 
 Notes:
-* for sms provider, add __phone_number__ text line field type to your User Content Class and add valid phone number to your user content : +<prefix>><phone_number_0_left_trimed>
-* don't activate TFA for all site, specially for back-office siteaccess : we are working to enable TFA for eZ Platform Back-Office 
+* don't activate TFA for all site, specially for back-office siteaccess
+* you should use HTTPS for U2F authentication 
 
 ## Routing
 
@@ -89,4 +86,17 @@ tfa_auth:
     prefix:   /_tfa
 ```
 
+## Assets
 
+Add js assets to your layout
+
+```twig
+{% javascripts
+    ...
+    'bundles/smileeztfa/js/u2f-api.js'
+    'bundles/smileeztfa/js/auth.js'
+    ...
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+```
