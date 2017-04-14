@@ -1,7 +1,7 @@
 # TODO
 
-* add trustued choice
+* add trustued feature
 * sms provider
   * validate phone number
-* new providers
-  * u2f
+* translate u2f messages
+* global : add messages

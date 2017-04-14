@@ -75,7 +75,8 @@ smileez_tfa:
 
 Notes:
 * don't activate TFA for all site, specially for back-office siteaccess
-* you should use HTTPS for U2F authentication 
+* you should use HTTPS for U2F authentication
+* U2F work only with Chrome browser 
 
 ## Routing
 
