@@ -1,0 +1,19 @@
+Smile\EzTFABundle\Entity\TFA:
+    type: entity
+    table: smile_ez_tfa
+    repositoryClass: Smile\EzTFABundle\Repository\TFARepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            unique: true
+            column: user_id
+        provider:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

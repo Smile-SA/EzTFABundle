@@ -1,0 +1,31 @@
+Smile\EzTFABundle\Entity\TFAU2F:
+    type: entity
+    table: smile_ez_tfa_u2f
+    repositoryClass: Smile\EzTFABundle\Repository\TFAU2FRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        keyName:
+            type: string
+            length: 255
+            column: key_name
+        keyHandle:
+            type: string
+            length: 255
+            column: key_handle
+        publicKey:
+            type: string
+            length: 255
+            column: public_key
+        certificate:
+            type: text
+        counter:
+            type: integer
+    lifecycleCallbacks: {  }

@@ -1,0 +1,21 @@
+{% extends layout %}
+
+{% trans_default_domain "smileeztfa" %}
+
+{% block content %}
+
+    {{ form_start(form, {'action': actionUrl, "attr": {"data-request": authenticationData|raw, "data-action": "auth", "id": "u2fForm", "class": "pure-form pure-form-aligned"}}) }}
+
+        <div id="u2fpressbutton" style="display: none;">
+            {% trans %}
+            Press Button on token
+            {% endtrans %}
+        </div>
+        <p class="widget">
+            {{ form_widget(form._auth_code, { 'id': '_auth_code' }) }}
+        </p>
+        <div id="u2fError"></div>
+
+    {{ form_end(form) }}
+
+{% endblock %}

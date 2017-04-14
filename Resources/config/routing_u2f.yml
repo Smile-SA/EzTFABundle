@@ -1,0 +1,9 @@
+tfa_u2f_register_form:
+    path: /register
+    methods: [GET, POST]
+    defaults: { _controller: smileeztfa.u2f.controller.register:registerAction }
+
+tfa_u2f_auth_form:
+    path: /auth
+    methods: [GET, POST]
+    defaults: { _controller: smileeztfa.u2f.controller.auth_form:authAction }

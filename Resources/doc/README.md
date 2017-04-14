@@ -1,0 +1,4 @@
+# Documentation
+
+* [Installation](INSTALLATION.md)
+

@@ -1,0 +1,14 @@
+{% extends layout %}
+
+{% trans_default_domain "smileeztfa" %}
+
+{% block content %}
+    {{ form_start(form, {'action': actionUrl, "attr": {"class": "pure-form pure-form-aligned"}}) }}
+    {{ form_errors(form) }}
+
+    {{ form_label(form.phone) }}
+    {{ form_errors(form.phone) }}
+    {{ form_widget(form.phone) }}
+
+    {{ form_end(form) }}
+{% endblock %}

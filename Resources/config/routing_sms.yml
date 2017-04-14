@@ -1,0 +1,10 @@
+tfa_sms_register_form:
+    path: /register
+    methods: [GET, POST]
+    defaults: { _controller: smileeztfa.sms.controller.register:registerAction }
+
+tfa_sms_auth_form:
+    path: /auth
+    methods: [GET, POST]
+    defaults: { _controller: smileeztfa.sms.controller.auth_form:authAction }
+

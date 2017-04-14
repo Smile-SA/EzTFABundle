@@ -1,0 +1,130 @@
+parameters:
+    smileeztfa.provider.email.class: Smile\EzTFABundle\Provider\Email\EmailProvider
+    smileeztfa.provider.sms.class: Smile\EzTFABundle\Provider\SMS\SMSProvider
+    smileeztfa.provider.u2f.class: Smile\EzTFABundle\Provider\U2F\U2FProvider
+    smileeztfa.email.controller.auth_form.class: Smile\EzTFABundle\Provider\Email\Controller\AuthController
+    smileeztfa.sms.controller.register.class: Smile\EzTFABundle\Provider\SMS\Controller\RegisterController
+    smileeztfa.sms.controller.auth_form.class: Smile\EzTFABundle\Provider\SMS\Controller\AuthController
+    smileeztfa.u2f.controller.register.class: Smile\EzTFABundle\Provider\U2F\Controller\RegisterController
+    smileeztfa.u2f.controller.auth_form.class: Smile\EzTFABundle\Provider\U2F\Controller\AuthController
+    smileeztfa.listener.class: Smile\EzTFABundle\EventListener\TFAListener
+    smileeztfa.security.auth_handler.class: Smile\EzTFABundle\Security\AuthHandler
+    smileeztfa_tfa_controller.class: Smile\EzTFABundle\Controller\TFAController
+    smileeztfa.u2f.authenticator.class: Smile\EzTFABundle\Provider\U2F\Security\Authenticator
+    smileeztfa.u2f.listener.registration.class: Smile\EzTFABundle\Provider\U2F\Event\RegistrationListener
+
+services:
+    smileeztfa.provider.email:
+        class: %smileeztfa.provider.email.class%
+        arguments:
+            - @session
+            - @translator.default
+        tags:
+            - { name: smileeztfa.provider, alias: email }
+
+    smileeztfa.provider.sms:
+        class: %smileeztfa.provider.sms.class%
+        arguments:
+            - @hautelook.router.template
+            - @session
+            - @translator.default
+        tags:
+            - { name: smileeztfa.provider, alias: sms }
+
+    smileeztfa.provider.u2f:
+        class: %smileeztfa.provider.u2f.class%
+        arguments:
+            - @hautelook.router.template
+            - @session
+            - @translator.default
+        tags:
+            - { name: smileeztfa.provider, alias: u2f }
+
+    smileeztfa.security.auth_handler:
+        class: %smileeztfa.security.auth_handler.class%
+        arguments:
+            - @security.token_storage
+            - @doctrine
+
+    smileeztfa.listener:
+        class: %smileeztfa.listener.class%
+        arguments:
+            - @security.token_storage
+            - @security.access.decision_manager
+            - @smileeztfa.security.auth_handler
+        tags:
+            - { name: kernel.event_subscriber }
+
+    smileeztfa_tfa_controller:
+        class: %smileeztfa_tfa_controller.class%
+        arguments:
+            - @security.token_storage
+            - @ezpublish.config.resolver
+            - @smileeztfa.security.auth_handler
+            - @doctrine
+        parent: ezpublish.controller.base
+
+    smileeztfa.email.controller.auth_form:
+        class: %smileeztfa.email.controller.auth_form.class%
+        arguments:
+            - @security.token_storage
+            - @ezpublish.config.resolver
+            - @mailer
+            - @translator
+            - $providers;smileez_tfa$
+        parent: ezpublish.controller.base
+
+    smileeztfa.sms.controller.register:
+        class: %smileeztfa.sms.controller.register.class%
+        arguments:
+            - @ezpublish.config.resolver
+            - @security.token_storage
+            - @doctrine
+            - @smileeztfa.provider.sms
+            - @session
+        parent: ezpublish.controller.base
+
+    smileeztfa.sms.controller.auth_form:
+        class: %smileeztfa.sms.controller.auth_form.class%
+        arguments:
+            - @security.token_storage
+            - @ezpublish.config.resolver
+            - @translator
+            - $providers;smileez_tfa$
+            - @doctrine
+            - @session
+        parent: ezpublish.controller.base
+
+    smileeztfa.u2f.controller.register:
+        class: %smileeztfa.u2f.controller.register.class%
+        parent: ezpublish.controller.base
+        arguments:
+            - @ezpublish.config.resolver
+            - @security.token_storage
+            - @smileeztfa.u2f.authenticator
+            - @smileeztfa.provider.u2f
+            - @session
+        parent: ezpublish.controller.base
+
+    smileeztfa.u2f.controller.auth_form:
+        class: %smileeztfa.u2f.controller.auth_form.class%
+        arguments:
+            - @ezpublish.config.resolver
+            - @smileeztfa.u2f.authenticator
+            - @security.token_storage
+            - @session
+        parent: ezpublish.controller.base
+
+    smileeztfa.u2f.authenticator:
+        class: %smileeztfa.u2f.authenticator.class%
+        arguments:
+            - @request_stack
+            - @doctrine
+
+    smileeztfa.u2f.listener.registration:
+        class: %smileeztfa.u2f.listener.registration.class%
+        arguments:
+            - @doctrine
+            - @hautelook.router.template
+        tags:
+            - { name: kernel.event_subscriber }

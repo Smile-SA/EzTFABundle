@@ -1,0 +1,15 @@
+{% extends layout %}
+
+{% trans_default_domain "smileeztfa" %}
+
+{% block content %}
+    <p>
+        {% trans %}
+        Enter your Two Factor Authentication code you have received by mail
+        {% endtrans %}
+    </p>
+    <form method="post" action="{{ path('tfa_email_auth_check') }}">
+        <input type="text" name="code" value="" />
+        <input type="submit" />
+    </form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends layout %}
+
+{% trans_default_domain "smileeztfa" %}
+
+{% block content %}
+    <p>
+        {% trans %}
+        Enter your Two Factor Authentication code you have received by sms
+        {% endtrans %}
+    </p>
+
+    {{ form_start(form, {'action': actionUrl, "attr": {"class": "pure-form pure-form-aligned"}}) }}
+    {{ form_errors(form) }}
+
+    {{ form_label(form.code) }}
+    {{ form_errors(form.code) }}
+    {{ form_widget(form.code) }}
+
+    {{ form_end(form) }}
+{% endblock %}

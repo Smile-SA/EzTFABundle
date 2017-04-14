@@ -1,0 +1,26 @@
+{% extends layout %}
+
+{% trans_default_domain "smileeztfa" %}
+
+{% block content %}
+    {% for providerId, provider in providersList %}
+        {% if provider.selected %}
+            {{ provider.title }}
+            <p>
+                <a href="{{ path('tfa_reinitialize', {'provider': providerId}) }}">
+                    {% trans %}
+                    Reinitialize
+                    {% endtrans %}
+                </a>
+                <a href="{{ path('tfa_cancel', {'provider': providerId}) }}">
+                    {% trans %}
+                    Cacncel
+                    {% endtrans %}
+                </a>
+            </p>
+        {% else %}
+            <a href="{{ path('tfa_click', {'provider': providerId}) }}">{{ provider.title }}</a>
+        {% endif %}
+        <p>{{ provider.description }}</p>
+    {% endfor %}
+{% endblock %}

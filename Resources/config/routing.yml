@@ -1,0 +1,44 @@
+tfa_list:
+    path: /list
+    methods: [GET]
+    defaults: { _controller: smileeztfa_tfa_controller:listAction }
+
+tfa_click:
+    path: /click/{provider}
+    methods: [GET]
+    defaults: { _controller: smileeztfa_tfa_controller:clickAction }
+    requirements:
+        provider: "[a-z0-9]+"
+
+tfa_registered:
+    path: /registered/{provider}
+    methods: [GET]
+    defaults: { _controller: smileeztfa_tfa_controller:registeredAction }
+    requirements:
+        provider: "[a-z0-9]+"
+
+tfa_reinitialize:
+    path: /reinitialize/{provider}
+    methods: [GET]
+    defaults: { _controller: smileeztfa_tfa_controller:reinitializeAction }
+    requirements:
+        provider: "[a-z0-9]+"
+
+tfa_cancel:
+    path: /cancel/{provider}
+    methods: [GET]
+    defaults: { _controller: smileeztfa_tfa_controller:cancelAction }
+    requirements:
+        provider: "[a-z0-9]+"
+
+tfa_provider_email:
+    resource: "@SmileEzTFABundle/Resources/config/routing_email.yml"
+    prefix: /email
+
+tfa_provider_sms:
+    resource: "@SmileEzTFABundle/Resources/config/routing_sms.yml"
+    prefix: /sms
+
+tfa_provider_u2f:
+    resource: "@SmileEzTFABundle/Resources/config/routing_u2f.yml"
+    prefix: /u2f

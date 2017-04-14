@@ -1,0 +1,23 @@
+{
+  "name": "smile/ez-tfa-bundle",
+  "type": "ezplatform-bundle",
+  "description": "TFA Bundle",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Smile SA",
+      "homepage": "http://www.smile.fr/"
+    }
+  ],
+  "require": {
+    "php": "~5.6|~7.0",
+    "ezsystems/ezpublish-kernel": "~6.8",
+    "ovh/ovh": "~2.0",
+    "doctrine/orm": "~2.5",
+    "yubico/u2flib-server": "~1.0"
+  },
+  "autoload": {
+    "psr-0": {"Smile\\EzTFABundle": ""}
+  },
+  "target-dir": "Smile/EzTFABundle"
+}

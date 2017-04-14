@@ -1,0 +1,24 @@
+{% extends layout %}
+
+{% trans_default_domain "smileeztfa" %}
+
+{% block content %}
+
+    {{ form_start(form, {'action': actionUrl, "attr": {"data-request": registrationRequest|raw,"data-action": "reg", "id": "u2fForm", "class": "pure-form pure-form-aligned"}}) }}
+
+        <div id="u2fkeyname">
+            {{ form_widget(form.keyName, { 'id': 'keyName' }) }}
+            {{ form_widget(form.register) }}
+        </div>
+
+        <div id="u2fpressbutton" style="display: none;">
+            {% trans %}
+            Press Button on token
+            {% endtrans %}
+        </div>
+        {{ form_widget(form._auth_code, { 'id': '_auth_code' }) }}
+        <div id="u2fError" style="display: none;"></div>
+
+    {{ form_end(form) }}
+
+{% endblock %}

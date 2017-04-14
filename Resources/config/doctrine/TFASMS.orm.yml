@@ -1,0 +1,19 @@
+Smile\EzTFABundle\Entity\TFASMS:
+    type: entity
+    table: smile_ez_tfa_sms
+    repositoryClass: Smile\EzTFABundle\Repository\TFASMSRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            unique: true
+            column: user_id
+        phone:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }
