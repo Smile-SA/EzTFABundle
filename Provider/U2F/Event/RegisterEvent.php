@@ -5,6 +5,10 @@ namespace Smile\EzTFABundle\Provider\U2F\Event;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Symfony\Component\EventDispatcher\Event;
 
+/**
+ * Class RegisterEvent
+ * @package Smile\EzTFABundle\Provider\U2F\Event
+ */
 class RegisterEvent extends Event
 {
     /**
@@ -28,12 +32,12 @@ class RegisterEvent extends Event
     protected $response;
 
     /**
-     * __construct
-     * @param array  $registration
-     * @param User   $user
-     * @param string $name
-     * @return void
-     **/
+     * RegisterEvent constructor.
+     *
+     * @param $registration
+     * @param $user
+     * @param $name
+     */
     public function __construct($registration, $user, $name)
     {
         $this->registration = $registration;

@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
+/**
+ * Class RegistrationListener
+ * @package Smile\EzTFABundle\Provider\U2F\Event
+ */
 class RegistrationListener implements EventSubscriberInterface
 {
     /** @var TFAU2FRepository $tfaU2FRepository */
@@ -21,6 +25,12 @@ class RegistrationListener implements EventSubscriberInterface
     /** @var Router $router */
     protected $router;
 
+    /**
+     * RegistrationListener constructor.
+     *
+     * @param Registry $doctrineRegistry
+     * @param Router $router
+     */
     public function __construct(
         Registry $doctrineRegistry,
         Router $router
@@ -32,11 +42,9 @@ class RegistrationListener implements EventSubscriberInterface
         $this->router = $router;
     }
 
-    // ..
     /**
-     * getSubscribedEvents
      * @return array
-     **/
+     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -46,6 +54,7 @@ class RegistrationListener implements EventSubscriberInterface
 
     /**
      * onRegister
+     *
      * @param RegisterEvent $event
      * @return void
      **/

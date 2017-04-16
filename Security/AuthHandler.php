@@ -22,8 +22,15 @@ class AuthHandler implements ProviderInterface
     /** @var TokenStorage $tokenStorage */
     protected $tokenStorage;
 
+    /** @var TFARepository $tfaRepository */
     protected $tfaRepository;
 
+    /**
+     * AuthHandler constructor.
+     *
+     * @param TokenStorage $tokenStorage
+     * @param Registry $doctrineRegistry
+     */
     public function __construct(
         TokenStorage $tokenStorage,
         Registry $doctrineRegistry
@@ -35,21 +42,29 @@ class AuthHandler implements ProviderInterface
     }
 
     /**
+     * Register new TFA Provider
+     *
      * @param ProviderInterface $provider
-     * @param $alias
+     * @param string $alias TFA Provider identifier
      */
     public function addProvider(ProviderInterface $provider, $alias)
     {
         $this->providers[$alias] = $provider;
     }
 
+    /**
+     * List all TFA Providers
+     *
+     * @return ProviderInterface[]
+     */
     public function getProviders()
     {
         return $this->providers;
     }
 
     /**
-     * @param Request $request
+     * Check if user is TFA authenticated
+     *
      * @return bool
      */
     public function isAuthenticated()
@@ -62,6 +77,8 @@ class AuthHandler implements ProviderInterface
     }
 
     /**
+     * Ask for TFA Authentication
+     *
      * @param Request $request
      * @return bool
      */
@@ -74,6 +91,11 @@ class AuthHandler implements ProviderInterface
         return $this->providers[$providerAlias]->requestAuthCode($request);
     }
 
+    /**
+     * Return user TFA Provider if user has activate a TFA Provider
+     *
+     * @return bool|string
+     */
     protected function getProviderAlias()
     {
         /** @var User $user */
@@ -89,21 +111,44 @@ class AuthHandler implements ProviderInterface
         return ($userProvider) ? $userProvider->getProvider() : false;
     }
 
+    /**
+     * Register for current user TFA Provider activated
+     *
+     * @param TFARepository $tfaRepository
+     * @param $userId
+     * @param $provider
+     * @return null
+     */
     public function register(TFARepository $tfaRepository, $userId, $provider)
     {
         return null;
     }
 
+    /**
+     * Return TFA Provider identifier
+     *
+     * @return null
+     */
     public function getIdentifier()
     {
         return null;
     }
 
+    /**
+     * Return TFA Provider name
+     *
+     * @return null
+     */
     public function getName()
     {
         return null;
     }
 
+    /**
+     * Return TFA Provider description
+     *
+     * @return null
+     */
     public function getDescription()
     {
         return null;

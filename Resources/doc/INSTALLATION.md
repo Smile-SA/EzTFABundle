@@ -61,7 +61,7 @@ https://api.ovh.com/createToken/
 
 ```yaml
 # app/config/config.yml
-smileez_tfa:
+smile_ez_tfa:
     system:
         acme_site: # TFA is activated only for this siteaccess
             providers:

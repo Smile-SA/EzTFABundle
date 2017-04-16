@@ -15,6 +15,10 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Translation\TranslatorInterface;
 
+/**
+ * Class AuthController
+ * @package Smile\EzTFABundle\Provider\SMS\Controller
+ */
 class AuthController extends Controller
 {
     /** @var TokenStorage $tokenStorage */
@@ -39,6 +43,11 @@ class AuthController extends Controller
      * AuthController constructor.
      *
      * @param TokenStorage $tokenStorage
+     * @param ConfigResolverInterface $configResolver
+     * @param TranslatorInterface $translator
+     * @param array $providers
+     * @param Registry $doctrineRegistry
+     * @param Session $session
      */
     public function __construct(
         TokenStorage $tokenStorage,
@@ -98,6 +107,12 @@ class AuthController extends Controller
         $smsConn->post('/sms/'. $smsServices[0] . '/jobs/', $content);
     }
 
+    /**
+     * Ask user for TFA code and authenticate
+     *
+     * @param Request $request
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function authAction(Request $request)
     {
         $actionUrl = $this->generateUrl('tfa_sms_auth_form');

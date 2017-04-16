@@ -9,6 +9,10 @@ use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Symfony\Component\HttpFoundation\RequestStack;
 use u2flib_server\U2F;
 
+/**
+ * Class Authenticator
+ * @package Smile\EzTFABundle\Provider\U2F\Security
+ */
 class Authenticator
 {
     /** @var U2F $u2f */
@@ -17,6 +21,12 @@ class Authenticator
     /** @var TFAU2FRepository $tfaU2FRepository */
     protected $tfaU2FRepository;
 
+    /**
+     * Authenticator constructor.
+     *
+     * @param RequestStack $requestStack
+     * @param Registry $doctrineRegistry
+     */
     public function __construct(
         RequestStack $requestStack,
         Registry $doctrineRegistry
@@ -30,6 +40,10 @@ class Authenticator
         $this->tfaU2FRepository = $entityManager->getRepository('SmileEzTFABundle:TFAU2F');
     }
 
+    /**
+     * @param User $user
+     * @return array
+     */
     public function generateRegistrationRequest(User $user)
     {
         $userU2Fs = $this->getUserKeys($user);
@@ -42,6 +56,12 @@ class Authenticator
         return $this->u2f->doRegister($regRequest, $registration);
     }
 
+    /**
+     * @param User $user
+     * @param $request
+     * @param $authData
+     * @return \u2flib_server\Registration
+     */
     public function checkRequest(User $user, $request, $authData)
     {
         $userU2Fs = $this->getUserKeys($user);
@@ -49,6 +69,10 @@ class Authenticator
         return $this->u2f->doAuthenticate($request, $userU2Fs, $authData);
     }
 
+    /**
+     * @param User $user
+     * @return array
+     */
     public function generateRequest(User $user)
     {
         $userU2Fs = $this->getUserKeys($user);
@@ -56,6 +80,10 @@ class Authenticator
         return $this->u2f->getAuthenticateData($userU2Fs);
     }
 
+    /**
+     * @param User $user
+     * @return array
+     */
     private function getUserKeys(User $user)
     {
         $userKeys = array();

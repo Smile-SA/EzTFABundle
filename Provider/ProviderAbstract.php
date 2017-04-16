@@ -20,6 +20,12 @@ class ProviderAbstract
     /** @var Translator $translator */
     protected $translator;
 
+    /**
+     * ProviderAbstract constructor.
+     *
+     * @param Session $session
+     * @param Translator $translator
+     */
     public function __construct(
         Session $session,
         Translator $translator
@@ -28,6 +34,11 @@ class ProviderAbstract
         $this->translator = $translator;
     }
 
+    /**
+     * Check if user is TFA authenticated
+     *
+     * @return mixed
+     */
     public function isAuthenticated()
     {
         return $this->session->get('tfa_authenticated', false);
@@ -50,11 +61,18 @@ class ProviderAbstract
         return substr($uri, 0, -strlen($semanticPathinfo));
     }
 
+    /**
+     * Register for current user TFA Provider activated
+     * 
+     * @param TFARepository $tfaRepository
+     * @param $userId
+     * @param $provider
+     * @return null
+     */
     public function register(
         TFARepository $tfaRepository,
         $userId, $provider
-    )
-    {
+    ) {
         $tfaRepository->setProvider($userId, $provider);
 
         return null;

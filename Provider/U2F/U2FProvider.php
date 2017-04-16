@@ -10,11 +10,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\Translator;
 
+/**
+ * Class U2FProvider
+ * @package Smile\EzTFABundle\Provider\U2F
+ */
 class U2FProvider extends ProviderAbstract implements ProviderInterface
 {
     /** @var Router $router */
     protected $router;
 
+    /**
+     * U2FProvider constructor.
+     *
+     * @param Router $router
+     * @param Session $session
+     * @param Translator $translator
+     */
     public function __construct(
         Router $router,
         Session $session,
@@ -37,11 +48,18 @@ class U2FProvider extends ProviderAbstract implements ProviderInterface
         return $this->router->generate('tfa_u2f_auth_form');
     }
 
+    /**
+     * Redirect user to register view
+     *
+     * @param TFARepository $tfaRepository
+     * @param $userId
+     * @param $provider
+     * @return string
+     */
     public function register(
         TFARepository $tfaRepository,
         $userId, $provider
-    )
-    {
+    ) {
         return $this->router->generate('tfa_u2f_register_form');
     }
 

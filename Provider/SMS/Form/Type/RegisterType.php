@@ -8,8 +8,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class RegisterType
+ * @package Smile\EzTFABundle\Provider\SMS\Form\Type
+ */
 class RegisterType extends AbstractType
 {
+    /**
+     * Construct sms register form
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -17,16 +27,31 @@ class RegisterType extends AbstractType
             ->add('reegister', SubmitType::class, ['label' => 'sms.register']);
     }
 
+    /**
+     * Return form name
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->getBlockPrefix();
     }
 
+    /**
+     * Return form block prefix
+     *
+     * @return string
+     */
     public function getBlockPrefix()
     {
         return 'smileeztfa_provider_sms_register';
     }
 
+    /**
+     * Configure form
+     *
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
 

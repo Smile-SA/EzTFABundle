@@ -39,6 +39,11 @@ class AuthController extends Controller
      * AuthController constructor.
      *
      * @param TokenStorage $tokenStorage
+     * @param ConfigResolverInterface $configResolver
+     * @param \Swift_Mailer $mailer
+     * @param TranslatorInterface $translator
+     * @param array $providers
+     * @param Session $session
      */
     public function __construct(
         TokenStorage $tokenStorage,
@@ -60,10 +65,9 @@ class AuthController extends Controller
     /**
      * Ask for TFA code authentication
      *
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function authAction(Request $request)
+    public function authAction()
     {
         $code = $this->session->get('tfa_authcode', false);
 
@@ -104,6 +108,13 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Send TFA code by email
+     *
+     * @param string $code
+     * @param string $emailFrom
+     * @param string $emailTo
+     */
     protected function sendCode($code, $emailFrom, $emailTo)
     {
         $message = \Swift_Message::newInstance();

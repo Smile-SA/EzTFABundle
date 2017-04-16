@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class AuthController
+ * @package Smile\EzTFABundle\Provider\U2F\Controller
+ */
 class AuthController extends Controller
 {
     /** @var ConfigResolverInterface $configResolver */
@@ -25,6 +29,14 @@ class AuthController extends Controller
     /** @var Session $session */
     protected $session;
 
+    /**
+     * AuthController constructor.
+     *
+     * @param ConfigResolverInterface $configResolver
+     * @param Authenticator $authenticator
+     * @param TokenStorage $tokenStorage
+     * @param Session $session
+     */
     public function __construct(
         ConfigResolverInterface $configResolver,
         Authenticator $authenticator,
@@ -37,6 +49,12 @@ class AuthController extends Controller
         $this->session = $session;
     }
 
+    /**
+     * Ask user for an Key and authenticate
+     *
+     * @param Request $request
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function authAction(Request $request)
     {
         /** @var User $user */

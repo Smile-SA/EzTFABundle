@@ -10,11 +10,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\Translator;
 
+/**
+ * Class SMSProvider
+ * @package Smile\EzTFABundle\Provider\SMS
+ */
 class SMSProvider extends ProviderAbstract implements ProviderInterface
 {
     /** @var Router $router */
     protected $router;
 
+    /**
+     * SMSProvider constructor.
+     *
+     * @param Router $router
+     * @param Session $session
+     * @param Translator $translator
+     */
     public function __construct(
         Router $router,
         Session $session,
@@ -41,11 +52,18 @@ class SMSProvider extends ProviderAbstract implements ProviderInterface
         return $redirectUrl;
     }
 
+    /**
+     * Redirect user to register view
+     *
+     * @param TFARepository $tfaRepository
+     * @param $userId
+     * @param $provider
+     * @return string
+     */
     public function register(
         TFARepository $tfaRepository,
         $userId, $provider
-    )
-    {
+    ) {
         return $this->router->generate('tfa_sms_register_form');
     }
 

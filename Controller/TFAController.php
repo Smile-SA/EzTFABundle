@@ -13,6 +13,10 @@ use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class TFAController
+ * @package Smile\EzTFABundle\Controller
+ */
 class TFAController extends Controller
 {
     /** @var TokenStorage $tokenStorage */
@@ -33,13 +37,20 @@ class TFAController extends Controller
     /** @var TFARepository $tfaRepository */
     protected $tfaRepository;
 
+    /**
+     * TFAController constructor.
+     *
+     * @param TokenStorage $tokenStorage
+     * @param ConfigResolverInterface $configResolver
+     * @param AuthHandler $authHandler
+     * @param Registry $doctrineRegistry
+     */
     public function __construct(
         TokenStorage $tokenStorage,
         ConfigResolverInterface $configResolver,
         AuthHandler $authHandler,
         Registry $doctrineRegistry
-    )
-    {
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->configResolver = $configResolver;
 
@@ -50,6 +61,11 @@ class TFAController extends Controller
         $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
     }
 
+    /**
+     * List all TFA Providers
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function listAction()
     {
         /** @var User $user */
@@ -76,6 +92,12 @@ class TFAController extends Controller
         }
     }
 
+    /**
+     * Activate specific TFA Provider
+     *
+     * @param string $provider TFA Provider identifier
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function clickAction($provider)
     {
         /** @var User $user */
@@ -110,6 +132,12 @@ class TFAController extends Controller
         }
     }
 
+    /**
+     * Return message when TFA Provider activated
+     *
+     * @param string $provider TFA Provider identifier
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function registeredAction($provider)
     {
         return $this->render('SmileEzTFABundle:tfa:click.html.twig', [
@@ -118,12 +146,24 @@ class TFAController extends Controller
         ]);
     }
 
+    /**
+     * Reinitialize TFA Provider configuration
+     *
+     * @param string $provider TFA Provider identifier
+     * @return RedirectResponse
+     */
     public function reinitializeAction($provider)
     {
         $redirectUrl = $this->generateUrl('tfa_click', ['provider' => $provider]);
         return new RedirectResponse($redirectUrl);
     }
 
+    /**
+     * Cancel TFA Provider previously activated
+     *
+     * @param string $provider TFA Provider identifier
+     * @return RedirectResponse
+     */
     public function cancelAction($provider)
     {
         /** @var User $user */

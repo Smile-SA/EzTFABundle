@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class RegisterController
+ * @package Smile\EzTFABundle\Provider\SMS\Controller
+ */
 class RegisterController extends Controller
 {
     /** @var ConfigResolverInterface $configResolver */
@@ -30,13 +34,20 @@ class RegisterController extends Controller
     /** @var ProviderInterface $provider */
     protected $provider;
 
+    /**
+     * RegisterController constructor.
+     *
+     * @param ConfigResolverInterface $configResolver
+     * @param TokenStorage $tokenStorage
+     * @param Registry $doctrineRegistry
+     * @param ProviderInterface $provider
+     */
     public function __construct(
         ConfigResolverInterface $configResolver,
         TokenStorage $tokenStorage,
         Registry $doctrineRegistry,
         ProviderInterface $provider
-    )
-    {
+    ) {
         $this->configResolver = $configResolver;
         $this->tokenStorage = $tokenStorage;
 
@@ -47,6 +58,12 @@ class RegisterController extends Controller
         $this->provider = $provider;
     }
 
+    /**
+     * Ask user form phone number and register TFA Provider configuration
+     *
+     * @param Request $request
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function registerAction(Request $request)
     {
         $actionUrl = $this->generateUrl('tfa_sms_register_form');
