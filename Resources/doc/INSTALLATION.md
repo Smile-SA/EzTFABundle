@@ -76,7 +76,25 @@ smile_ez_tfa:
 Notes:
 * don't activate TFA for all site, specially for back-office siteaccess
 * you should use HTTPS for U2F authentication
-* U2F work only with Chrome browser 
+* U2F work only with Chrome browser
+ 
+If you want to disable a TFA provider, just add *disabled: true* parameter, example :
+
+```yaml
+# app/config/config.yml
+smile_ez_tfa:
+    system:
+        acme_site: # TFA is activated only for this siteaccess
+            providers:
+                email:
+                    from: no-spam@your.mail # email provider sender mail
+                sms:
+                    application_key: <ovh_application_key>
+                    application_secret: <ovh_application_secret>
+                    consumer_key: <ovh_consumer_key>
+                u2f:
+                    disabled: true
+```
 
 ## Routing
 
