@@ -77,4 +77,9 @@ class U2FProvider extends ProviderAbstract implements ProviderInterface
     {
         return $this->translator->trans('u2f.provider.description', array(), 'smileeztfa');
     }
+
+    public function canBeMultiple()
+    {
+        return true;
+    }
 }

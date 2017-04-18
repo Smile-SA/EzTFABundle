@@ -77,4 +77,9 @@ class ProviderAbstract
 
         return null;
     }
+
+    public function canBeMultiple()
+    {
+        return false;
+    }
 }

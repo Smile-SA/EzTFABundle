@@ -166,5 +166,11 @@ class AuthHandler implements ProviderInterface
         return null;
     }
 
-
+    /**
+     * @return bool
+     */
+    public function canBeMultiple()
+    {
+        return false;
+    }
 }

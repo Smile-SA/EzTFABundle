@@ -122,7 +122,9 @@ class TFAController extends Controller
             /** @var TFA $userProvider */
             $userProvider = $this->tfaRepository->findOneByUserId($apiUser->id);
 
-            if ($userProvider) {
+            if ($userProvider
+                && !$this->providers[$userProvider->getProvider()]->canBeMultiple()
+            ) {
                 $this->entityManager->remove($userProvider);
                 $this->entityManager->flush();
             }
@@ -134,8 +136,7 @@ class TFAController extends Controller
                 $this->tfaRepository,
                 $apiUser->id,
                 $provider
-            )
-            ) {
+            )) {
                 return $this->redirect($redirect);
             }
 

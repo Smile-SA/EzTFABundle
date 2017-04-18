@@ -2,6 +2,7 @@
 
 namespace Smile\EzTFABundle\Provider\U2F\Event;
 
+use Smile\EzTFABundle\Entity\TFA;
 use Smile\EzTFABundle\Repository\TFARepository;
 use Smile\EzTFABundle\Repository\TFAU2FRepository;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
@@ -16,6 +17,9 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
  */
 class RegistrationListener implements EventSubscriberInterface
 {
+    /** @var \Doctrine\Common\Persistence\ObjectManager|object $entityManager */
+    protected $entityManager;
+
     /** @var TFAU2FRepository $tfaU2FRepository */
     protected $tfaU2FRepository;
 
@@ -35,9 +39,9 @@ class RegistrationListener implements EventSubscriberInterface
         Registry $doctrineRegistry,
         Router $router
     ) {
-        $entityManager = $doctrineRegistry->getManager();
-        $this->tfaU2FRepository = $entityManager->getRepository('SmileEzTFABundle:TFAU2F');
-        $this->tfaRepository = $entityManager->getRepository('SmileEzTFABundle:TFA');
+        $this->entityManager = $doctrineRegistry->getManager();
+        $this->tfaU2FRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFAU2F');
+        $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
 
         $this->router = $router;
     }
@@ -67,7 +71,14 @@ class RegistrationListener implements EventSubscriberInterface
         $registrationData = $event->getRegistration();
 
         $this->tfaU2FRepository->saveKey($registrationData, $apiUser->id, $event->getKeyName());
-        $this->tfaRepository->setProvider($apiUser->id, 'u2f');
+        /** @var TFA $userProvider */
+        $userProvider = $this->tfaRepository->findOneByUserId($apiUser->id);
+        if ($userProvider && $userProvider->getProvider() !== 'u2f') {
+            $this->entityManager->remove($userProvider);
+            $this->entityManager->flush();
+        } else if (!$userProvider) {
+            $this->tfaRepository->setProvider($apiUser->id, 'u2f');
+        }
 
         $response = new RedirectResponse($this->router->generate('tfa_registered', ['provider' => 'u2f']));
         $event->setResponse($response);

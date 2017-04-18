@@ -23,4 +23,6 @@ interface ProviderInterface
     public function requestAuthCode(Request $request);
 
     public function register(TFARepository $tfaRepository, $userId, $provider);
+
+    public function canBeMultiple();
 }

@@ -9,6 +9,14 @@
         <div id="u2fkeyname">
             {{ form_widget(form.keyName, { 'id': 'keyName' }) }}
             {{ form_widget(form.register) }}
+
+            <ul>
+                {% for registeredKey in registered %}
+                    <li>
+                        {{ registeredKey.keyName }} <a href="{{ path('tfa_u2f_remove', {id: registeredKey.id}) }}">{{ 'Remove'|trans }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
 
         <div id="u2fpressbutton" style="display: none;">
