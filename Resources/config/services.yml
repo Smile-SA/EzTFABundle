@@ -37,12 +37,16 @@ services:
             - @hautelook.router.template
             - @session
             - @translator.default
+            - @security.token_storage
+            - @doctrine
         tags:
             - { name: smileeztfa.provider, alias: u2f }
 
     smileeztfa.security.auth_handler:
         class: %smileeztfa.security.auth_handler.class%
         arguments:
+            - @session
+            - @translator.default
             - @security.token_storage
             - @doctrine
             - $providers;smile_ez_tfa$

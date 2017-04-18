@@ -191,6 +191,9 @@ class TFAController extends Controller
         if ($userProvider && $userProvider->getProvider() == $provider) {
             $this->entityManager->remove($userProvider);
             $this->entityManager->flush();
+            if (isset($this->providers[$provider])) {
+                $this->providers[$provider]->cancel();
+            }
         }
 
         $redirectUrl = $this->generateUrl('tfa_list');

@@ -4,17 +4,20 @@ namespace Smile\EzTFABundle\Security;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Smile\EzTFABundle\Entity\TFA;
+use Smile\EzTFABundle\Provider\ProviderAbstract;
 use Smile\EzTFABundle\Provider\ProviderInterface;
 use Smile\EzTFABundle\Repository\TFARepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
+use Symfony\Component\Translation\Translator;
 
 /**
  * Class AuthHandler
  * @package Smile\EzTFABundle\Security
  */
-class AuthHandler implements ProviderInterface
+class AuthHandler extends ProviderAbstract implements ProviderInterface
 {
     /** @var ProviderInterface[] $providers */
     private $providers = array();
@@ -34,10 +37,13 @@ class AuthHandler implements ProviderInterface
      * @param Registry $doctrineRegistry
      */
     public function __construct(
+        Session $session,
+        Translator $translator,
         TokenStorage $tokenStorage,
         Registry $doctrineRegistry,
         $providersConfig
     ) {
+        parent::__construct($session, $translator);
         $this->tokenStorage = $tokenStorage;
 
         $entityManager = $doctrineRegistry->getManager();
@@ -121,56 +127,5 @@ class AuthHandler implements ProviderInterface
         $userProvider = $this->tfaRepository->findOneByUserId($apiUser->id);
 
         return ($userProvider) ? $userProvider->getProvider() : false;
-    }
-
-    /**
-     * Register for current user TFA Provider activated
-     *
-     * @param TFARepository $tfaRepository
-     * @param $userId
-     * @param $provider
-     * @return null
-     */
-    public function register(TFARepository $tfaRepository, $userId, $provider)
-    {
-        return null;
-    }
-
-    /**
-     * Return TFA Provider identifier
-     *
-     * @return null
-     */
-    public function getIdentifier()
-    {
-        return null;
-    }
-
-    /**
-     * Return TFA Provider name
-     *
-     * @return null
-     */
-    public function getName()
-    {
-        return null;
-    }
-
-    /**
-     * Return TFA Provider description
-     *
-     * @return null
-     */
-    public function getDescription()
-    {
-        return null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function canBeMultiple()
-    {
-        return false;
     }
 }

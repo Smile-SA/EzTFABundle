@@ -25,4 +25,6 @@ interface ProviderInterface
     public function register(TFARepository $tfaRepository, $userId, $provider);
 
     public function canBeMultiple();
+
+    public function cancel();
 }

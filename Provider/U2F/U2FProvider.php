@@ -2,12 +2,16 @@
 
 namespace Smile\EzTFABundle\Provider\U2F;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Smile\EzTFABundle\Provider\ProviderAbstract;
 use Smile\EzTFABundle\Provider\ProviderInterface;
 use Smile\EzTFABundle\Repository\TFARepository;
+use Smile\EzTFABundle\Repository\TFAU2FRepository;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Translation\Translator;
 
 /**
@@ -19,6 +23,15 @@ class U2FProvider extends ProviderAbstract implements ProviderInterface
     /** @var Router $router */
     protected $router;
 
+    /** @var TokenStorage $tokenStorage */
+    protected $tokenStorage;
+
+    /** @var \Doctrine\Common\Persistence\ObjectManager|object $entityManager */
+    protected $entityManager;
+
+    /** @var TFAU2FRepository $tfaU2FRepository */
+    protected $tfaU2FRepository;
+
     /**
      * U2FProvider constructor.
      *
@@ -29,10 +42,17 @@ class U2FProvider extends ProviderAbstract implements ProviderInterface
     public function __construct(
         Router $router,
         Session $session,
-        Translator $translator
+        Translator $translator,
+        TokenStorage $tokenStorage,
+        Registry $doctrineRegistry
     ) {
         parent::__construct($session, $translator);
         $this->router = $router;
+        $this->tokenStorage = $tokenStorage;
+
+        $this->entityManager = $doctrineRegistry->getManager();
+        /** @var TFAU2FRepository tfaU2FRepository */
+        $this->tfaU2FRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFAU2F');
     }
 
     /**
@@ -81,5 +101,20 @@ class U2FProvider extends ProviderAbstract implements ProviderInterface
     public function canBeMultiple()
     {
         return true;
+    }
+
+    public function cancel()
+    {
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+        $apiUser = $user->getAPIUser();
+
+        $u2fKeys = $this->tfaU2FRepository->findByUserId($apiUser->id);
+        if ($u2fKeys) {
+            foreach ($u2fKeys as $u2fKey) {
+                $this->entityManager->remove($u2fKey);
+                $this->entityManager->flush();
+            }
+        }
     }
 }

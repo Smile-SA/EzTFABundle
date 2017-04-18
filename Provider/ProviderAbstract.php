@@ -78,7 +78,27 @@ class ProviderAbstract
         return null;
     }
 
+    public function getIdentifier()
+    {
+        return null;
+    }
+
+    public function getName()
+    {
+        return null;
+    }
+
+    public function getDescription()
+    {
+        return null;
+    }
+
     public function canBeMultiple()
+    {
+        return false;
+    }
+
+    public function cancel()
     {
         return false;
     }
