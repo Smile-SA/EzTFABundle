@@ -37,6 +37,8 @@ class TFAController extends Controller
     /** @var TFARepository $tfaRepository */
     protected $tfaRepository;
 
+    protected $providersConfig;
+
     /**
      * TFAController constructor.
      *
@@ -49,7 +51,8 @@ class TFAController extends Controller
         TokenStorage $tokenStorage,
         ConfigResolverInterface $configResolver,
         AuthHandler $authHandler,
-        Registry $doctrineRegistry
+        Registry $doctrineRegistry,
+        $providersConfig
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->configResolver = $configResolver;
@@ -59,6 +62,8 @@ class TFAController extends Controller
 
         $this->entityManager = $doctrineRegistry->getManager();
         $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
+
+        $this->providersConfig = $providersConfig;
     }
 
     /**
@@ -78,11 +83,20 @@ class TFAController extends Controller
             $providersList = array();
 
             foreach ($this->providers as $provider) {
-                $providersList[$provider->getIdentifier()] = array(
-                    'selected'    => ($userProvider && $userProvider->getProvider() == $provider->getIdentifier()) ? true : false,
-                    'title'       => $provider->getName(),
-                    'description' => $provider->getDescription()
-                );
+                $identifier = $provider->getIdentifier();
+
+                if ((isset($this->providersConfig[$identifier])
+                    && (!isset($this->providersConfig[$identifier]['disabled'])
+                    || (isset($this->providersConfig[$identifier]['disabled'])
+                    && $this->providersConfig[$identifier]['disabled'] !== true)))
+                    || !isset($this->providersConfig[$identifier])
+                ) {
+                    $providersList[$provider->getIdentifier()] = array(
+                        'selected'    => ($userProvider && $userProvider->getProvider() == $provider->getIdentifier()) ? true : false,
+                        'title'       => $provider->getName(),
+                        'description' => $provider->getDescription()
+                    );
+                }
             }
 
             return $this->render('SmileEzTFABundle:tfa:list.html.twig', [

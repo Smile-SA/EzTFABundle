@@ -30,7 +30,7 @@ class AuthController extends Controller
     protected $translator;
 
     /** @var array $providers */
-    public $providers;
+    protected $providers;
 
     /** @var Session $session */
     protected $session;

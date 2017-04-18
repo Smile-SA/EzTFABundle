@@ -31,7 +31,7 @@ class AuthController extends Controller
     protected $translator;
 
     /** @var array $providers */
-    public $providers;
+    protected $providers;
 
     /** @var TFASMSRepository $tfaSMSRepository */
     protected $tfaSMSRepository;

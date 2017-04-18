@@ -1,2 +1,2 @@
 parameters:
-    smile_ez_tfa.default.providers: []
+    smile_ez_tfa.default.providers: ~

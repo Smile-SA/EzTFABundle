@@ -45,6 +45,7 @@ services:
         arguments:
             - @security.token_storage
             - @doctrine
+            - $providers;smile_ez_tfa$
 
     smileeztfa.listener:
         class: %smileeztfa.listener.class%
@@ -62,6 +63,7 @@ services:
             - @ezpublish.config.resolver
             - @smileeztfa.security.auth_handler
             - @doctrine
+            - $providers;smile_ez_tfa$
         parent: ezpublish.controller.base
 
     smileeztfa.email.controller.auth_form:
@@ -71,7 +73,7 @@ services:
             - @ezpublish.config.resolver
             - @mailer
             - @translator
-            - $providers;smileez_tfa$
+            - $providers;smile_ez_tfa$
         parent: ezpublish.controller.base
 
     smileeztfa.sms.controller.register:
@@ -90,7 +92,7 @@ services:
             - @security.token_storage
             - @ezpublish.config.resolver
             - @translator
-            - $providers;smileez_tfa$
+            - $providers;smile_ez_tfa$
             - @doctrine
             - @session
         parent: ezpublish.controller.base

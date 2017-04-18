@@ -25,6 +25,8 @@ class AuthHandler implements ProviderInterface
     /** @var TFARepository $tfaRepository */
     protected $tfaRepository;
 
+    protected $providersConfig;
+
     /**
      * AuthHandler constructor.
      *
@@ -33,12 +35,15 @@ class AuthHandler implements ProviderInterface
      */
     public function __construct(
         TokenStorage $tokenStorage,
-        Registry $doctrineRegistry
+        Registry $doctrineRegistry,
+        $providersConfig
     ) {
         $this->tokenStorage = $tokenStorage;
 
         $entityManager = $doctrineRegistry->getManager();
         $this->tfaRepository = $entityManager->getRepository('SmileEzTFABundle:TFA');
+
+        $this->providersConfig = $providersConfig;
     }
 
     /**
@@ -49,7 +54,14 @@ class AuthHandler implements ProviderInterface
      */
     public function addProvider(ProviderInterface $provider, $alias)
     {
-        $this->providers[$alias] = $provider;
+        if ((isset($this->providersConfig[$alias])
+                && (!isset($this->providersConfig[$alias]['disabled'])
+                    || (isset($this->providersConfig[$alias]['disabled'])
+                        && $this->providersConfig[$alias]['disabled'] !== true)))
+            || !isset($this->providersConfig[$alias])
+        ) {
+            $this->providers[$alias] = $provider;
+        }
     }
 
     /**
