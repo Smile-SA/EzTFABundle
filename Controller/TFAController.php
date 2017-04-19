@@ -70,6 +70,8 @@ class TFAController extends Controller
      */
     public function listAction()
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
         if ($user && $user instanceof User) {
@@ -111,6 +113,8 @@ class TFAController extends Controller
      */
     public function clickAction($provider)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
         if ($user && $user instanceof User) {
@@ -151,6 +155,8 @@ class TFAController extends Controller
      */
     public function registeredAction($provider)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         return $this->render('SmileEzTFABundle:tfa:click.html.twig', [
             'layout' => $this->configResolver->getParameter('pagelayout'),
             'provider' => $provider
@@ -165,6 +171,8 @@ class TFAController extends Controller
      */
     public function reinitializeAction($provider)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $redirectUrl = $this->generateUrl('tfa_click', ['provider' => $provider]);
         return new RedirectResponse($redirectUrl);
     }
@@ -177,6 +185,8 @@ class TFAController extends Controller
      */
     public function cancelAction($provider)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
         $apiUser = $user->getAPIUser();

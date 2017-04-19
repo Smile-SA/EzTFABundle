@@ -69,6 +69,8 @@ class AuthController extends Controller
      */
     public function authAction()
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $code = $this->session->get('tfa_authcode', false);
 
         /** @var User $user */
