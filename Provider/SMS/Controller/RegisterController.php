@@ -27,9 +27,6 @@ class RegisterController extends Controller
     /** @var TokenStorage $tokenStorage */
     protected $tokenStorage;
 
-    /** @var \Doctrine\Common\Persistence\ObjectManager|object $entityManager */
-    protected $entityManager;
-
     /** @var TFARepository $tfaRepository */
     protected $tfaRepository;
 
@@ -56,9 +53,9 @@ class RegisterController extends Controller
         $this->configResolver = $configResolver;
         $this->tokenStorage = $tokenStorage;
 
-        $this->entityManager = $doctrineRegistry->getManager();
-        $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
-        $this->tfaSMSRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFASMS');
+        $entityManager = $doctrineRegistry->getManager();
+        $this->tfaRepository = $entityManager->getRepository('SmileEzTFABundle:TFA');
+        $this->tfaSMSRepository = $entityManager->getRepository('SmileEzTFABundle:TFASMS');
 
         $this->provider = $provider;
     }
@@ -87,11 +84,10 @@ class RegisterController extends Controller
             $user = $this->tokenStorage->getToken()->getUser();
             $apiUser = $user->getAPIUser();
 
-            /** @var TFASMSRepository $userSMS */
+            /** @var TFASMS $userSMS */
             $userSMS = $this->tfaSMSRepository->findOneByUserId($apiUser->id);
             if ($userSMS) {
-                $this->entityManager->remove($userSMS);
-                $this->entityManager->flush();
+                $this->tfaSMSRepository->remove($userSMS);
             }
             $this->tfaSMSRepository->savePhone($apiUser->id, $phoneNumber);
             $this->tfaRepository->setProvider($apiUser->id, $this->provider->getIdentifier());

@@ -31,9 +31,6 @@ class TFAController extends Controller
     /** @var AuthHandler $authHandler */
     protected $authHandler;
 
-    /** @var \Doctrine\Common\Persistence\ObjectManager|object $entityManager */
-    protected $entityManager;
-
     /** @var TFARepository $tfaRepository */
     protected $tfaRepository;
 
@@ -60,8 +57,8 @@ class TFAController extends Controller
         $this->authHandler = $authHandler;
         $this->providers = $this->authHandler->getProviders();
 
-        $this->entityManager = $doctrineRegistry->getManager();
-        $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
+        $entityManager = $doctrineRegistry->getManager();
+        $this->tfaRepository = $entityManager->getRepository('SmileEzTFABundle:TFA');
 
         $this->providersConfig = $providersConfig;
     }
@@ -125,8 +122,7 @@ class TFAController extends Controller
             if ($userProvider
                 && !$this->providers[$userProvider->getProvider()]->canBeMultiple()
             ) {
-                $this->entityManager->remove($userProvider);
-                $this->entityManager->flush();
+                $this->tfaRepository->remove($userProvider);
             }
 
             $tfaProviders = $this->authHandler->getProviders();
@@ -189,8 +185,7 @@ class TFAController extends Controller
         $userProvider = $this->tfaRepository->findOneByUserId($apiUser->id);
 
         if ($userProvider && $userProvider->getProvider() == $provider) {
-            $this->entityManager->remove($userProvider);
-            $this->entityManager->flush();
+            $this->tfaRepository->remove($userProvider);
             if (isset($this->providers[$provider])) {
                 $this->providers[$provider]->cancel();
             }

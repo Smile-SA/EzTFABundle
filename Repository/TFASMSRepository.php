@@ -21,4 +21,10 @@ class TFASMSRepository extends \Doctrine\ORM\EntityRepository
         $this->getEntityManager()->persist($tfaSMS);
         $this->getEntityManager()->flush();
     }
+
+    public function remove(TFASMS $tfaSMS)
+    {
+        $this->getEntityManager()->remove($tfaSMS);
+        $this->getEntityManager()->flush();
+    }
 }

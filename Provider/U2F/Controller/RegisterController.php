@@ -3,6 +3,7 @@
 namespace Smile\EzTFABundle\Provider\U2F\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Smile\EzTFABundle\Entity\TFA;
 use Smile\EzTFABundle\Entity\TFAU2F;
 use Smile\EzTFABundle\Provider\ProviderInterface;
 use Smile\EzTFABundle\Provider\U2F\Event\RegisterEvent;
@@ -37,9 +38,6 @@ class RegisterController extends Controller
     /** @var  Session $session */
     protected $session;
 
-    /** @var \Doctrine\Common\Persistence\ObjectManager|object $entityManager */
-    protected $entityManager;
-
     /** @var TFAU2FRepository $tfaU2FRepository */
     protected $tfaU2FRepository;
 
@@ -69,9 +67,9 @@ class RegisterController extends Controller
         $this->provider = $provider;
         $this->session = $session;
 
-        $this->entityManager = $doctrineRegistry->getManager();
-        $this->tfaU2FRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFAU2F');
-        $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
+        $entityManager = $doctrineRegistry->getManager();
+        $this->tfaU2FRepository = $entityManager->getRepository('SmileEzTFABundle:TFAU2F');
+        $this->tfaRepository = $entityManager->getRepository('SmileEzTFABundle:TFA');
     }
 
     /**
@@ -131,15 +129,14 @@ class RegisterController extends Controller
         /** @var TFAU2F $u2fKey */
         $u2fKey = $this->tfaU2FRepository->findOneById($id);
         if ($u2fKey && $u2fKey->getUserId() == $apiUser->id) {
-            $this->entityManager->remove($u2fKey);
-            $this->entityManager->flush();
+            $this->tfaU2FRepository->remove($u2fKey);
 
             $u2fKeys = $this->getRegistered();
             if (!$u2fKeys) {
+                /** @var TFA $userTFA */
                 $userTFA = $this->tfaRepository->findOneByUserId($apiUser->id);
                 if ($userTFA) {
-                    $this->entityManager->remove($userTFA);
-                    $this->entityManager->flush();
+                    $this->tfaRepository->remove($userTFA);
                 }
             }
         }

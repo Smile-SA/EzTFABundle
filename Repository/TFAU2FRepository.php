@@ -25,4 +25,10 @@ class TFAU2FRepository extends \Doctrine\ORM\EntityRepository
         $this->getEntityManager()->persist($tfaU2F);
         $this->getEntityManager()->flush();
     }
+
+    public function remove(TFAU2F $tfaU2F)
+    {
+        $this->getEntityManager()->remove($tfaU2F);
+        $this->getEntityManager()->flush();
+    }
 }

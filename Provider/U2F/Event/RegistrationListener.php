@@ -17,9 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
  */
 class RegistrationListener implements EventSubscriberInterface
 {
-    /** @var \Doctrine\Common\Persistence\ObjectManager|object $entityManager */
-    protected $entityManager;
-
     /** @var TFAU2FRepository $tfaU2FRepository */
     protected $tfaU2FRepository;
 
@@ -39,9 +36,9 @@ class RegistrationListener implements EventSubscriberInterface
         Registry $doctrineRegistry,
         Router $router
     ) {
-        $this->entityManager = $doctrineRegistry->getManager();
-        $this->tfaU2FRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFAU2F');
-        $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
+        $entityManager = $doctrineRegistry->getManager();
+        $this->tfaU2FRepository = $entityManager->getRepository('SmileEzTFABundle:TFAU2F');
+        $this->tfaRepository = $entityManager->getRepository('SmileEzTFABundle:TFA');
 
         $this->router = $router;
     }
@@ -74,8 +71,7 @@ class RegistrationListener implements EventSubscriberInterface
         /** @var TFA $userProvider */
         $userProvider = $this->tfaRepository->findOneByUserId($apiUser->id);
         if ($userProvider && $userProvider->getProvider() !== 'u2f') {
-            $this->entityManager->remove($userProvider);
-            $this->entityManager->flush();
+            $this->tfaRepository->remove($userProvider);
         } else if (!$userProvider) {
             $this->tfaRepository->setProvider($apiUser->id, 'u2f');
         }

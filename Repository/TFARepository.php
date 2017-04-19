@@ -21,4 +21,10 @@ class TFARepository extends \Doctrine\ORM\EntityRepository
         $this->getEntityManager()->persist($tfa);
         $this->getEntityManager()->flush();
     }
+
+    public function remove(TFA $tfaProvider)
+    {
+        $this->getEntityManager()->remove($tfaProvider);
+        $this->getEntityManager()->flush();
+    }
 }
