@@ -3,12 +3,14 @@
 namespace Smile\EzTFABundle\Provider\SMS\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use libphonenumber\PhoneNumber;
 use Smile\EzTFABundle\Entity\TFASMS;
 use Smile\EzTFABundle\Provider\ProviderInterface;
 use Smile\EzTFABundle\Repository\TFARepository;
 use eZ\Bundle\EzPublishCoreBundle\Controller;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use Smile\EzTFABundle\Repository\TFASMSRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -25,10 +27,13 @@ class RegisterController extends Controller
     /** @var TokenStorage $tokenStorage */
     protected $tokenStorage;
 
+    /** @var \Doctrine\Common\Persistence\ObjectManager|object $entityManager */
+    protected $entityManager;
+
     /** @var TFARepository $tfaRepository */
     protected $tfaRepository;
 
-    /** @var TFASMS $tfaSMSRepository  */
+    /** @var TFASMSRepository $tfaSMSRepository  */
     protected $tfaSMSRepository;
 
     /** @var ProviderInterface $provider */
@@ -51,9 +56,9 @@ class RegisterController extends Controller
         $this->configResolver = $configResolver;
         $this->tokenStorage = $tokenStorage;
 
-        $entityManager = $doctrineRegistry->getManager();
-        $this->tfaRepository = $entityManager->getRepository('SmileEzTFABundle:TFA');
-        $this->tfaSMSRepository = $entityManager->getRepository('SmileEzTFABundle:TFASMS');
+        $this->entityManager = $doctrineRegistry->getManager();
+        $this->tfaRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFA');
+        $this->tfaSMSRepository = $this->entityManager->getRepository('SmileEzTFABundle:TFASMS');
 
         $this->provider = $provider;
     }
@@ -74,11 +79,21 @@ class RegisterController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var PhoneNumber $phoneObject */
+            $phoneObject = $TFASMS->getPhone();
+            $phoneNumber = '+' . $phoneObject->getCountryCode() . $phoneObject->getNationalNumber();
+
             /** @var User $user */
             $user = $this->tokenStorage->getToken()->getUser();
             $apiUser = $user->getAPIUser();
 
-            $this->tfaSMSRepository->savePhone($apiUser->id, $TFASMS->getPhone());
+            /** @var TFASMSRepository $userSMS */
+            $userSMS = $this->tfaSMSRepository->findOneByUserId($apiUser->id);
+            if ($userSMS) {
+                $this->entityManager->remove($userSMS);
+                $this->entityManager->flush();
+            }
+            $this->tfaSMSRepository->savePhone($apiUser->id, $phoneNumber);
             $this->tfaRepository->setProvider($apiUser->id, $this->provider->getIdentifier());
 
             return new RedirectResponse($redirectUrl);

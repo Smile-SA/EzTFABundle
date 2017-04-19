@@ -14,7 +14,8 @@
     "ezsystems/ezpublish-kernel": "~6.8",
     "ovh/ovh": "~2.0",
     "doctrine/orm": "~2.5",
-    "yubico/u2flib-server": "~1.0"
+    "yubico/u2flib-server": "~1.0",
+    "misd/phone-number-bundle": "~1.2"
   },
   "autoload": {
     "psr-0": {"Smile\\EzTFABundle": ""}
