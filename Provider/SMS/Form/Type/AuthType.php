@@ -2,6 +2,7 @@
 
 namespace Smile\EzTFABundle\Provider\SMS\Form\Type;
 
+use Smile\EzTFABundle\Provider\SMS\Form\Constraints\AuthCode;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,7 +24,11 @@ class AuthType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('code', TextType::class, ['required' => true, 'label' => 'sms.code'])
+            ->add('code', TextType::class, [
+                'required' => true,
+                'label' => 'sms.code',
+                'constraints' => array(new AuthCode())
+            ])
             ->add('send', SubmitType::class, ['label' => 'sms.send']);
     }
 

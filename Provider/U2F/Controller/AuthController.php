@@ -65,14 +65,8 @@ class AuthController extends Controller
         $form = $this->createForm('Smile\EzTFABundle\Provider\U2F\Form\Type\AuthType');
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            if ($this->authenticator->checkRequest(
-                $user,
-                json_decode($this->session->get('u2f_authentication')),
-                json_decode($data['_auth_code'])
-            )) {
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
                 $this->session->set('tfa_authenticated', true);
                 return new RedirectResponse($this->session->get('tfa_redirecturi'));
             } else {

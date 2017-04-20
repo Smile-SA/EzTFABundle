@@ -120,13 +120,6 @@ class AuthController extends Controller
         $form = $this->createForm('Smile\EzTFABundle\Provider\SMS\Form\Type\AuthType');
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $TFACode = $this->session->get('tfa_authcode', false);
-            $data = $form->getData();
-            $code = (int)$data['code'];
-
-            if ($code !== $TFACode)
-                return $this->redirectToRoute('tfa_sms_auth_form');
-
             $this->session->set('tfa_authenticated', true);
             return new RedirectResponse($this->session->get('tfa_redirecturi'));
         }

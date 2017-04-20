@@ -63,54 +63,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Ask for TFA code authentication
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function authAction()
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        $code = $this->session->get('tfa_authcode', false);
-
-        /** @var User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-        $emailTo = $user->getAPIUser()->email;
-        $emailFrom = $this->providers['email']['from'];
-
-        $codeSended = $this->session->get('tfa_codesended', false);
-        if (!$codeSended) {
-            $this->sendCode($code, $emailFrom, $emailTo);
-            $this->session->set('tfa_codesended', true);
-        }
-
-        return $this->render('SmileEzTFABundle:tfa:email/auth.html.twig', [
-            'layout' => $this->configResolver->getParameter('pagelayout')
-        ]);
-    }
-
-    /**
-     * Check for TFA code authentication
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     */
-    public function checkAction(Request $request)
-    {
-        $code = null;
-
-        $TFACode = $this->session->get('tfa_authcode', false);
-        $code = $request->get('code');
-
-        if ($code && $code == $TFACode) {
-            $this->session->set('tfa_authenticated', true);
-            return new RedirectResponse($this->session->get('tfa_redirecturi'));
-        } else {
-            return $this->redirectToRoute('tfa_email_auth_form');
-        }
-    }
-
-    /**
      * Send TFA code by email
      *
      * @param string $code
@@ -134,5 +86,42 @@ class AuthController extends Controller
             );
 
         $this->mailer->send($message);
+    }
+
+    /**
+     * Ask for TFA code authentication
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function authAction(Request $request)
+    {
+        $actionUrl = $this->generateUrl('tfa_email_auth_form');
+
+        $form = $this->createForm('Smile\EzTFABundle\Provider\Email\Form\Type\AuthType');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->session->set('tfa_authenticated', true);
+            return new RedirectResponse($this->session->get('tfa_redirecturi'));
+        }
+
+        $code = $this->session->get('tfa_authcode', false);
+
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+        $apiUser = $user->getAPIUser();
+        $mailTo = $apiUser->email;
+        $mailFrom = $this->providers['email']['from'];
+
+        $codeSended = $this->session->get('tfa_codesended', false);
+        if (!$codeSended) {
+            $this->sendCode($code, $mailFrom, $mailTo);
+            $this->session->set('tfa_codesended', true);
+        }
+
+        return $this->render('SmileEzTFABundle:tfa:email/auth.html.twig', [
+            'layout' => $this->configResolver->getParameter('pagelayout'),
+            'form' => $form->createView(),
+            'actionUrl' => $actionUrl
+        ]);
     }
 }

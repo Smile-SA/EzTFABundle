@@ -1,9 +1,4 @@
 tfa_email_auth_form:
     path: /auth
-    methods: [GET]
+    methods: [GET, POST]
     defaults: { _controller: smileeztfa.email.controller.auth_form:authAction }
-
-tfa_email_auth_check:
-    path: /check
-    methods: [POST]
-    defaults: { _controller: smileeztfa.email.controller.auth_form:checkAction }

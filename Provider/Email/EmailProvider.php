@@ -20,7 +20,7 @@ class EmailProvider extends ProviderAbstract implements ProviderInterface
      */
     public function requestAuthCode(Request $request)
     {
-        $authCode = random_int(10000, 99999);
+        $authCode = random_int(100000, 999999);
         $this->session->set('tfa_authcode', $authCode);
         $this->session->set('tfa_redirecturi', $request->getUri());
 

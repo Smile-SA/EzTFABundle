@@ -13,6 +13,10 @@ parameters:
     smileeztfa.u2f.authenticator.class: Smile\EzTFABundle\Provider\U2F\Security\Authenticator
     smileeztfa.u2f.listener.registration.class: Smile\EzTFABundle\Provider\U2F\Event\RegistrationListener
 
+    smileeztfa.email.auth.contraint.class: Smile\EzTFABundle\Provider\Email\Form\Constraints\AuthCodeValidator
+    smileeztfa.sms.auth.contraint.class: Smile\EzTFABundle\Provider\SMS\Form\Constraints\AuthCodeValidator
+    smileeztfa.u2f.auth.contraint.class: Smile\EzTFABundle\Provider\U2F\Form\Constraints\AuthCodeValidator
+
 services:
     smileeztfa.provider.email:
         class: %smileeztfa.provider.email.class%
@@ -78,6 +82,7 @@ services:
             - @mailer
             - @translator
             - $providers;smile_ez_tfa$
+            - @session
         parent: ezpublish.controller.base
 
     smileeztfa.sms.controller.register:
@@ -135,4 +140,27 @@ services:
             - @hautelook.router.template
         tags:
             - { name: kernel.event_subscriber }
+
+    smileeztfa.email.auth.contraint:
+        class: %smileeztfa.email.auth.contraint.class%
+        arguments:
+            - @session
+        tags:
+            - { name: validator.constraint_validator, alias: smileeztfa.email.auth.contraint }
+
+    smileeztfa.sms.auth.contraint:
+        class: %smileeztfa.sms.auth.contraint.class%
+        arguments:
+            - @session
+        tags:
+            - { name: validator.constraint_validator, alias: smileeztfa.sms.auth.contraint }
+
+    smileeztfa.u2f.auth.contraint:
+        class: %smileeztfa.u2f.auth.contraint.class%
+        arguments:
+            - @smileeztfa.u2f.authenticator
+            - @security.token_storage
+            - @session
+        tags:
+            - { name: validator.constraint_validator, alias: smileeztfa.u2f.auth.contraint }
 

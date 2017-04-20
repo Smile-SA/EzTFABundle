@@ -8,8 +8,13 @@
         Enter your Two Factor Authentication code you have received by mail
         {% endtrans %}
     </p>
-    <form method="post" action="{{ path('tfa_email_auth_check') }}">
-        <input type="text" name="code" value="" />
-        <input type="submit" />
-    </form>
+
+    {{ form_start(form, {'action': actionUrl, "attr": {"class": "pure-form pure-form-aligned"}}) }}
+    {{ form_errors(form) }}
+
+    {{ form_label(form.code) }}
+    {{ form_errors(form.code) }}
+    {{ form_widget(form.code) }}
+
+    {{ form_end(form) }}
 {% endblock %}
