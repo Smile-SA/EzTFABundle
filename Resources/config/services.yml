@@ -135,3 +135,4 @@ services:
             - @hautelook.router.template
         tags:
             - { name: kernel.event_subscriber }
+

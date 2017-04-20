@@ -68,7 +68,7 @@ class RegisterController extends Controller
      */
     public function registerAction(Request $request)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $actionUrl = $this->generateUrl('tfa_sms_register_form');
         $redirectUrl = $this->generateUrl('tfa_registered', ['provider' => $this->provider->getIdentifier()]);
