@@ -66,8 +66,14 @@ class TFAListener implements EventSubscriberInterface
             return;
         }
 
-        if (strpos($request->getUri(), '/_tfa/') !== false)
+        if (strpos($request->getUri(), '/_tfa/registered/') !== false)
             return;
+
+        $providers = $this->authHandler->getProviders();
+        foreach ($providers as $key => $provider) {
+            if (strpos($request->getUri(), '/_tfa/' . $key . '/auth') !== false)
+                return;
+        }
 
         $token = $this->tokenStorage->getToken();
         if (!$token)
