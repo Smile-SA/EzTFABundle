@@ -5,10 +5,13 @@ namespace Smile\EzTFABundle\Provider\SMS;
 use Smile\EzTFABundle\Provider\ProviderAbstract;
 use Smile\EzTFABundle\Provider\ProviderInterface;
 use Smile\EzTFABundle\Repository\TFARepository;
+use Smile\EzTFABundle\Repository\TFASMSRepository;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\Translator;
+use eZ\Publish\API\Repository\Values\User\User as APIUser;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 /**
  * Class SMSProvider
@@ -18,6 +21,9 @@ class SMSProvider extends ProviderAbstract implements ProviderInterface
 {
     /** @var Router $router */
     protected $router;
+
+    /** @var TFASMSRepository $tfaSMSRepository */
+    protected $tfaSMSRepository;
 
     /**
      * SMSProvider constructor.
@@ -29,10 +35,15 @@ class SMSProvider extends ProviderAbstract implements ProviderInterface
     public function __construct(
         Router $router,
         Session $session,
-        Translator $translator
+        Translator $translator,
+        Registry $doctrineRegistry
     ) {
         parent::__construct($session, $translator);
         $this->router = $router;
+
+        $entityManager = $doctrineRegistry->getManager();
+        /** @var TFASMSRepository tfaSMSRepository */
+        $this->tfaSMSRepository = $entityManager->getRepository('SmileEzTFABundle:TFASMS');
     }
 
     /**
@@ -80,5 +91,10 @@ class SMSProvider extends ProviderAbstract implements ProviderInterface
     public function getDescription()
     {
         return $this->translator->trans('sms.provider.description', array(), 'smileeztfa');
+    }
+
+    public function purge(APIUser $user)
+    {
+        $this->tfaSMSRepository->purge($user);
     }
 }

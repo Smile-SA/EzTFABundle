@@ -32,6 +32,7 @@ services:
             - @hautelook.router.template
             - @session
             - @translator.default
+            - @doctrine
         tags:
             - { name: smileeztfa.provider, alias: sms }
 

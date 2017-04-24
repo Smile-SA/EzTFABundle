@@ -4,6 +4,7 @@ namespace Smile\EzTFABundle\Provider;
 
 use Smile\EzTFABundle\Repository\TFARepository;
 use Symfony\Component\HttpFoundation\Request;
+use eZ\Publish\API\Repository\Values\User\User as APIUser;
 
 /**
  * Interface ProviderInterface
@@ -27,4 +28,6 @@ interface ProviderInterface
     public function canBeMultiple();
 
     public function cancel();
+
+    public function purge(APIUser $user);
 }

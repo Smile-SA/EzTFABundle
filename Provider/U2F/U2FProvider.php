@@ -4,6 +4,7 @@ namespace Smile\EzTFABundle\Provider\U2F;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
+use eZ\Publish\API\Repository\Values\User\User as APIUser;
 use Smile\EzTFABundle\Entity\TFAU2F;
 use Smile\EzTFABundle\Provider\ProviderAbstract;
 use Smile\EzTFABundle\Provider\ProviderInterface;
@@ -114,5 +115,10 @@ class U2FProvider extends ProviderAbstract implements ProviderInterface
                 $this->tfaU2FRepository->remove($u2fKey);
             }
         }
+    }
+
+    public function purge(APIUser $user)
+    {
+        $this->tfaU2FRepository->purge($user);
     }
 }

@@ -6,6 +6,7 @@ use Smile\EzTFABundle\Repository\TFARepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\Translator;
+use eZ\Publish\API\Repository\Values\User\User as APIUser;
 
 /**
  * Class ProviderAbstract
@@ -99,6 +100,11 @@ class ProviderAbstract
     }
 
     public function cancel()
+    {
+        return false;
+    }
+
+    public function purge(APIUser $user)
     {
         return false;
     }

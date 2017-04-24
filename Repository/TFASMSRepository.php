@@ -3,6 +3,7 @@
 namespace Smile\EzTFABundle\Repository;
 
 use Smile\EzTFABundle\Entity\TFASMS;
+use eZ\Publish\API\Repository\Values\User\User as APIUser;
 
 /**
  * TFASMSRepository
@@ -26,5 +27,18 @@ class TFASMSRepository extends \Doctrine\ORM\EntityRepository
     {
         $this->getEntityManager()->remove($tfaSMS);
         $this->getEntityManager()->flush();
+    }
+
+    public function purge(APIUser $user)
+    {
+        /** @var TFASMS[] $tfaSMSs */
+        $tfaSMSs = $this->findByUserId($user->id);
+
+        if ($tfaSMSs) {
+            foreach ($tfaSMSs as $tfaSMS) {
+                $this->getEntityManager()->remove($tfaSMS);
+                $this->getEntityManager()->flush();
+            }
+        }
     }
 }

@@ -123,9 +123,17 @@ class TFAController extends Controller
             /** @var TFA $userProvider */
             $userProvider = $this->tfaRepository->findOneByUserId($apiUser->id);
 
-            if ($userProvider
-                && !$this->providers[$userProvider->getProvider()]->canBeMultiple()
+            if (
+                $userProvider &&
+                (
+                    $userProvider->getProvider() != $provider ||
+                    (
+                        $userProvider->getProvider() == $provider &&
+                        !$this->providers[$userProvider->getProvider()]->canBeMultiple()
+                    )
+                )
             ) {
+                !$this->providers[$userProvider->getProvider()]->purge($apiUser);
                 $this->tfaRepository->remove($userProvider);
             }
 
@@ -198,6 +206,7 @@ class TFAController extends Controller
             $this->tfaRepository->remove($userProvider);
             if (isset($this->providers[$provider])) {
                 $this->providers[$provider]->cancel();
+                $this->providers[$provider]->purge($apiUser);
             }
         }
 

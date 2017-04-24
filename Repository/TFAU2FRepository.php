@@ -3,6 +3,7 @@
 namespace Smile\EzTFABundle\Repository;
 
 use Smile\EzTFABundle\Entity\TFAU2F;
+use eZ\Publish\API\Repository\Values\User\User as APIUser;
 
 /**
  * TFAU2FRepository
@@ -30,5 +31,18 @@ class TFAU2FRepository extends \Doctrine\ORM\EntityRepository
     {
         $this->getEntityManager()->remove($tfaU2F);
         $this->getEntityManager()->flush();
+    }
+
+    public function purge(APIUser $user)
+    {
+        /** @var TFAU2F[] $tfaU2Fs */
+        $tfaU2Fs = $this->findByUserId($user->id);
+
+        if ($tfaU2Fs) {
+            foreach ($tfaU2Fs as $tfaU2F) {
+                $this->getEntityManager()->remove($tfaU2F);
+                $this->getEntityManager()->flush();
+            }
+        }
     }
 }
