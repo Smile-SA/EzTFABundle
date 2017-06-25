@@ -10,8 +10,8 @@
     }
   ],
   "require": {
-    "php": "~5.6|~7.0",
-    "ezsystems/ezpublish-kernel": "~6.8",
+    "php": "~7.1",
+    "ezsystems/ezpublish-kernel": "~7.0",
     "ovh/ovh": "~2.0",
     "doctrine/orm": "~2.5",
     "yubico/u2flib-server": "~1.0",

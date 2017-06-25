@@ -37,8 +37,8 @@ class TFASMSRepository extends \Doctrine\ORM\EntityRepository
         if ($tfaSMSs) {
             foreach ($tfaSMSs as $tfaSMS) {
                 $this->getEntityManager()->remove($tfaSMS);
-                $this->getEntityManager()->flush();
             }
+            $this->getEntityManager()->flush();
         }
     }
 }

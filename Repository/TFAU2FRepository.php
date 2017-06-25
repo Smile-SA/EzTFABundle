@@ -41,8 +41,8 @@ class TFAU2FRepository extends \Doctrine\ORM\EntityRepository
         if ($tfaU2Fs) {
             foreach ($tfaU2Fs as $tfaU2F) {
                 $this->getEntityManager()->remove($tfaU2F);
-                $this->getEntityManager()->flush();
             }
+            $this->getEntityManager()->flush();
         }
     }
 }
